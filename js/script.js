@@ -1,8 +1,7 @@
 const API_KEY = '892b793efffd475e9d49af090d600599'
-
 const newsList = document.querySelector('.news-list');
-
 const choiceElem = document.querySelector('.js-choice');
+const formSearch = document.querySelector('form-search');
 
 const choices = new Choices(choiceElem, {
     searchEnabled: false,
@@ -49,8 +48,18 @@ const renderCard = (data) => {
 };
 
 const loadNews = async ()=> {
-    const data = await getData('https://newsapi.org/v2/top-headlines?country=ua');
+    newsList.innerHTML = '<li class="preload"></li>'
+    const country = localStorage.getItem('country') || 'ua';
+    choices.setChoiceByValue(country)
+    
+    const data = await getData(`https://newsapi.org/v2/top-headlines?country=${country}`);
     renderCard(data.articles);
 };
+
+choiceElem.addEventListener('change', (e) => {
+const value = e.detail.value;
+localStorage.setItem('country',value); 
+loadNews();
+})
 
 loadNews();
